@@ -24,17 +24,14 @@ Ideally suited as a bootstrap configuration layer for IoT sensors, smart home ap
 ---
 
 ## 💻 Software Architecture
-Implemented via a high-performance **C/C++ (ESP-IDF 6.0)** runtime utilizing native FreeRTOS tasks:
+The firmware is structured into **encapsulated C++ components** designed for maximum modularity and memory efficiency:
 
-### Core Execution Modules
-- **Asynchronous Button Monitor Task**  
-  Background polling loop tracking GPIO 0 input levels. Features software debounce timers to safely distinguish normal clicks from factory reset triggers.
-- **Unified Provisioning Orchestrator**  
-  Initializes `network_provisioning` manager dynamically. Automatically prints a QR Code to the serial console for swift mobile app scans.
-- **Visual Heartbeat Indicator**  
-  Dedicated low-priority IO task executing a brief pulse pattern to signal runtime sanity and network status.
-- **Secure Key Exchange Layers**  
-  Configurable security modules including AES-GCM-128 payload encryption coupled with client validation keys.
+### Standalone Component Modules
+- **`wifi_prov` Component:** Manages the core provisioning loop, registers customized protocomm endpoints (like `custom-data`), and renders the terminal pairing QR code.
+- **`status_led` Component:** Encapsulates the visual indicators. It runs an independent, private FreeRTOS blinking thread that adjusts flashing rates dynamically to display system status.
+- **`factory_reset` Component:** Monitors the physical BOOT button (GPIO 0). A background task detects a 3-second hold to erase NVS credentials and reboot.
+- **System Orchestrator (`main`):** Bootstraps and delegates setup to the components, then immediately calls `vTaskDelete(NULL)` to delete the startup task and free its 4KB stack RAM back to the heap.
+
 
 ### Distributed Network Engine
 - **Protocomm Endpoints**  

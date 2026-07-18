@@ -32,13 +32,13 @@
 #include <network_provisioning/scheme_softap.h>
 #endif /* CONFIG_EXAMPLE_PROV_TRANSPORT_SOFTAP */
 #include "qrcode.h"
+#include "wifi_prov.h"
 
 static const char *TAG = "app";
 
 #if CONFIG_EXAMPLE_PROV_SECURITY_VERSION_2
 #if CONFIG_EXAMPLE_PROV_SEC2_DEV_MODE
-#define EXAMPLE_PROV_SEC2_USERNAME "wifiprov"
-#define EXAMPLE_PROV_SEC2_PWD "abcd1234"
+
 
 /* This salt,verifier has been generated for username = "wifiprov" and password = "abcd1234"
  * IMPORTANT NOTE: For production cases, this must be unique to every device
@@ -120,6 +120,7 @@ static void event_handler(void *arg, esp_event_base_t event_base,
         {
         case NETWORK_PROV_START:
             ESP_LOGI(TAG, "Provisioning started");
+            set_led_status(LED_STATE_PROVISIONING);
             break;
         case NETWORK_PROV_WIFI_CRED_RECV:
         {
@@ -128,6 +129,7 @@ static void event_handler(void *arg, esp_event_base_t event_base,
                           "\n\tSSID     : %s\n\tPassword : %s",
                      (const char *)wifi_sta_cfg->ssid,
                      (const char *)wifi_sta_cfg->password);
+            set_led_status(LED_STATE_CONNECTING);
             break;
         }
         case NETWORK_PROV_WIFI_CRED_FAIL:
@@ -136,6 +138,7 @@ static void event_handler(void *arg, esp_event_base_t event_base,
             ESP_LOGE(TAG, "Provisioning failed!\n\tReason : %s"
                           "\n\tPlease reset to factory and retry provisioning",
                      (*reason == NETWORK_PROV_WIFI_STA_AUTH_ERROR) ? "Wi-Fi station authentication failed" : "Wi-Fi access-point not found");
+            set_led_status(LED_STATE_ERROR);
 #ifdef CONFIG_EXAMPLE_RESET_PROV_MGR_ON_FAILURE
             /* Reset the state machine on provisioning failure.
              * This is enabled by the CONFIG_EXAMPLE_RESET_PROV_MGR_ON_FAILURE configuration.
@@ -190,6 +193,7 @@ static void event_handler(void *arg, esp_event_base_t event_base,
     {
         ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
         ESP_LOGI(TAG, "Connected with IP Address:" IPSTR, IP2STR(&event->ip_info.ip));
+        set_led_status(LED_STATE_CONNECTED);
         /* Signal main application to continue execution */
         xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_EVENT);
 #ifdef CONFIG_EXAMPLE_PROV_TRANSPORT_BLE
