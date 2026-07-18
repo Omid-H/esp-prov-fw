@@ -1,0 +1,12 @@
+Copyright 2024 Espressif Systems (Shanghai) Co., Ltd.
+
+This project includes code derived from:
+
+ESP-IDF Extra Components
+https://github.com/espressif/idf-extra-components
+
+and uses the Network Provisioning component.
+
+Copyright (c) Espressif Systems
+
+Licensed under the Apache License, Version 2.0.

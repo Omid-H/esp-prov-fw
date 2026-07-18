@@ -1,0 +1,14 @@
+# ESP-IDF
+build/
+sdkconfig.old
+sdkconfig.defaults.*.old
+managed_components/
+
+# Editor/IDE settings
+.vscode/
+.clangd/
+
+# Binary / artifact files
+*.bin
+*.elf
+*.map
