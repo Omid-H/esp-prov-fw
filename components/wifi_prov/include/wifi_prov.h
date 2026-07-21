@@ -13,8 +13,8 @@
 extern "C" {
 #endif
 
-#define EXAMPLE_PROV_SEC2_USERNAME "smartlamp"
-#define EXAMPLE_PROV_SEC2_PWD "Lamp3232"
+#define EXAMPLE_PROV_SEC2_USERNAME "KitchenLight"
+#define EXAMPLE_PROV_SEC2_PWD "Lilac7272"
 
 typedef enum {
     LED_STATE_PROVISIONING, // waiting for credentials (fast blink: 100ms ON / 100ms OFF)
