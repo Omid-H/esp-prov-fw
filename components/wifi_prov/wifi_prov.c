@@ -555,6 +555,7 @@ void init_wifi_provisioning(void)
             mfg_data[0] = 0xE5;
             mfg_data[1] = 0x02;
             memcpy(mfg_data + 2, EXAMPLE_PROV_SEC2_USERNAME, user_len);
+            ESP_LOGI(TAG, "Broadcasting username '%s' via BLE Manufacturer Data", EXAMPLE_PROV_SEC2_USERNAME);
             ESP_ERROR_CHECK(network_prov_scheme_ble_set_mfg_data(mfg_data, 2 + user_len));
             free(mfg_data);
         }
