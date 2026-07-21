@@ -546,6 +546,20 @@ void init_wifi_provisioning(void)
 #ifdef CONFIG_EXAMPLE_REPROVISIONING
         network_prov_mgr_disable_auto_stop(1000);
 #endif
+
+#ifdef CONFIG_EXAMPLE_PROV_TRANSPORT_BLE
+        // Pack Espressif Company ID (0x02E5) followed by the username string
+        size_t user_len = strlen(EXAMPLE_PROV_SEC2_USERNAME);
+        uint8_t *mfg_data = malloc(2 + user_len);
+        if (mfg_data) {
+            mfg_data[0] = 0xE5;
+            mfg_data[1] = 0x02;
+            memcpy(mfg_data + 2, EXAMPLE_PROV_SEC2_USERNAME, user_len);
+            ESP_ERROR_CHECK(network_prov_scheme_ble_set_mfg_data(mfg_data, 2 + user_len));
+            free(mfg_data);
+        }
+#endif
+
         /* Start provisioning service */
         ESP_ERROR_CHECK(network_prov_mgr_start_provisioning(security, (const void *)sec_params, service_name, service_key));
 
